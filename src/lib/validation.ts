@@ -30,3 +30,21 @@ export const loginSchema = z.object({
     .max(225, "La contraseña no puede tener más de 225 caracteres"),
 });
 
+export const forgotPasswordSchema = z.object({
+  email: z
+    .string()
+    .email("Formato de email inválido")
+    .min(1, "El email es requerido"),
+});
+
+export const resetPasswordSchema = z
+  .object({
+    newPassword: z
+      .string()
+      .min(6, "La contraseña debe tener al menos 6 caracteres"),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "Las contraseñas no coinciden",
+    path: ["confirmPassword"],
+  });

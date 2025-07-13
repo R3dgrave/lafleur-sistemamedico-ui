@@ -23,7 +23,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
   } = useFormContext<LoginFormValues>();
 
   return (
-    <form className="grid gap-6">
+    <div className="grid gap-6">
       <div className="grid gap-2">
         <Label htmlFor="email">Email</Label>
         <Input
@@ -66,7 +66,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
           ¿Olvidaste tu contraseña?
         </Button>
       </div>
-    </form>
+    </div>
   );
 };
 
