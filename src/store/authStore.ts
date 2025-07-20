@@ -80,7 +80,7 @@ const useAuthStore = create<AuthState>((set) => ({
         } else {
           console.log("Other error during initialization. Logging out.");
         }
-        localStorage.removeItem("accessToken"); // Limpiar token inválido
+        localStorage.removeItem("accessToken");
         set({
           isAuthenticated: false,
           accessToken: null,

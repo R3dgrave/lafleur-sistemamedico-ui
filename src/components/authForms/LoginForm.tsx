@@ -51,7 +51,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
         )}
       </div>
       <Button
-        type="submit" // Este botón ahora está dentro del formulario
+        type="submit"
         className="w-full cursor-pointer"
         disabled={isSubmitting}
       >

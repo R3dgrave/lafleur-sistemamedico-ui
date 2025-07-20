@@ -14,7 +14,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-import ResetPasswordForm from "@/components/forms/ResetPasswordForm";
+import ResetPasswordForm from "@/components/authForms/ResetPasswordForm";
 
 type ResetPasswordFormValues = z.infer<typeof resetPasswordSchema>;
 

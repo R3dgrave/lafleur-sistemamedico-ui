@@ -1,4 +1,3 @@
-// src/pages/auth/LoginPage.tsx
 import React from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -14,7 +13,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import LoginForm from "@/components/forms/LoginForm";
+import LoginForm from "@/components/authForms/LoginForm";
 
 type LoginFormValues = z.infer<typeof loginSchema>;
 

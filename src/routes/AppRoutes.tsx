@@ -4,7 +4,9 @@ import useAuthStore from "@/store/authStore";
 import LoginPage from "@/pages/auth/LoginPage";
 import ForgotPasswordPage from "@/pages/auth/ForgotPasswordPage";
 import ResetPasswordPage from "@/pages/auth/ResetPasswordPage";
+import Layout from "@/components/layout/layout";
 import PatientsPage from "@/pages/patients/PatientsPage";
+import PatientDetailsPage from "@/pages/patients/PatientDetailsPage";
 
 const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -37,9 +39,21 @@ const AppRoutes: React.FC = () => {
       <Route
         path="/pacientes"
         element={
-          <PrivateRoute>
-            <PatientsPage />
-          </PrivateRoute>
+          <Layout>
+            <PrivateRoute>
+              <PatientsPage />
+            </PrivateRoute>
+          </Layout>
+        }
+      />
+      <Route
+        path="/pacientes/:id"
+        element={
+          <Layout>
+            <PrivateRoute>
+              <PatientDetailsPage />
+            </PrivateRoute>
+          </Layout>
         }
       />
     </Routes>

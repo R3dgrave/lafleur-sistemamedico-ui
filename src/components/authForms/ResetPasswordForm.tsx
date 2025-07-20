@@ -18,7 +18,6 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({
   const { register, formState: { errors } } = useFormContext<ResetPasswordFormValues>();
 
   return (
-    // <form className="grid gap-4"> <-- REMOVE the <form> tag here
     <div className="grid gap-4">
       <div className="grid gap-2">
         <Label htmlFor="newPassword">Nueva Contraseña</Label>
