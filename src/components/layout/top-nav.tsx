@@ -4,15 +4,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Separator } from "@/components/ui/separator";
-import { Bell, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Bell, ChevronsLeft, ChevronsRight } from "lucide-react";
+import { useLocation } from "react-router-dom";
 import { ModeToggle } from "../toggle/mode-toggle";
-import Profile01 from "./profile-01";
-
-interface BreadcrumbItem {
-  label: string;
-  href?: string;
-}
+import Profile from "./profile";
+import { createElement } from "react";
+import { sidebarLinks } from "./sidebarLinks";
+import useAuthStore from "@/store/authStore";
 
 export default function TopNav({
   onToggleSidebar,
@@ -21,10 +19,25 @@ export default function TopNav({
   onToggleSidebar: () => void;
   isCollapsed: boolean;
 }) {
-  const breadcrumbs: BreadcrumbItem[] = [
-    { label: "kokonutUI", href: "/" },
-    { label: "dashboard", href: "/dashboard" },
-  ];
+  const location = useLocation();
+  const { user: loggedInUser, isLoading: isLoadingUser } = useAuthStore();
+
+  // Lógica para determinar el nombre y el icono de la sección actual
+  const getCurrentSection = () => {
+    // Itera sobre todas las secciones y sus elementos en sidebarLinks
+    for (const section of sidebarLinks) {
+      for (const item of section.items) {
+        // Si la ruta actual coincide con la ruta de un elemento del sidebar
+        if (location.pathname === item.to) {
+          return { label: item.label, icon: item.icon };
+        }
+      }
+    }
+    // Si no se encuentra una coincidencia, por ejemplo, en la ruta raíz o una no definida
+    return { label: "Dashboard", icon: null }; // Puedes usar un icono por defecto
+  };
+
+  const currentSection = getCurrentSection(); // Obtiene la información de la sección actual
 
   return (
     <nav className="px-3 flex items-center justify-between bg-white dark:bg-[#0F0F12] border-b border-gray-200 dark:border-[#1F1F23] h-full">
@@ -44,26 +57,16 @@ export default function TopNav({
         className="hidden sm:flex mx-2 data-[orientation=vertical]:h-4"
       />
 
-      <div className="ml-2 grow font-medium text-sm hidden sm:flex items-center space-x-1 truncate">
-        {breadcrumbs.map((item, index) => (
-          <div key={item.label} className="flex items-center">
-            {index > 0 && (
-              <ChevronRight className="h-4 w-4 text-gray-500 dark:text-gray-400 mx-1" />
-            )}
-            {item.href ? (
-              <Link
-                to={item.href}
-                className="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
-              >
-                {item.label}
-              </Link>
-            ) : (
-              <span className="text-gray-900 dark:text-gray-100">
-                {item.label}
-              </span>
-            )}
-          </div>
-        ))}
+      {/* Aquí se muestra el icono y el nombre de la sección actual */}
+      <div className="ml-2 grow font-medium text-sm flex items-center space-x-2 truncate">
+        {currentSection.icon &&
+          // Renderiza el icono si existe
+          createElement(currentSection.icon, {
+            className: "h-5 w-5 text-gray-600 dark:text-gray-300",
+          })}
+        <span className="text-gray-400 dark:text-gray-100">
+          / {currentSection.label}
+        </span>
       </div>
 
       <div className="flex items-center gap-2 sm:gap-4 ml-auto sm:ml-0">
@@ -78,8 +81,12 @@ export default function TopNav({
 
         <DropdownMenu>
           <DropdownMenuTrigger className="focus:outline-none">
+            {/* Muestra la imagen de perfil del usuario o un placeholder */}
             <img
-              src="https://ferf1mheo22r9ira.public.blob.vercel-storage.com/avatar-01-n0x8HFv8EUetf9z6ht0wScJKoTHqf8.png"
+              src={
+                loggedInUser?.profilePictureUrl ||
+                "https://placehold.co/80x80/cccccc/333333?text=User"
+              }
               alt="User avatar"
               className="rounded-full ring-2 ring-gray-200 dark:ring-[#2B2B30] sm:w-8 sm:h-8 w-7 h-7 object-cover cursor-pointer"
             />
@@ -87,9 +94,15 @@ export default function TopNav({
           <DropdownMenuContent
             align="end"
             sideOffset={8}
-            className="w-[280px] sm:w-80 bg-background border-border rounded-lg shadow-lg"
+            className="w-[400px] sm:w-80 bg-background border-border rounded-lg shadow-lg"
           >
-            <Profile01 avatar="https://ferf1mheo22r9ira.public.blob.vercel-storage.com/avatar-01-n0x8HFv8EUetf9z6ht0wScJKoTHqf8.png" />
+            {/* Pasa los datos del usuario al componente Profile */}
+            {isLoadingUser ? (
+              // Muestra un estado de carga mientras se obtienen los datos del usuario
+              <div className="px-4 py-2">Cargando usuario...</div>
+            ) : (
+              <Profile user={loggedInUser} />
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

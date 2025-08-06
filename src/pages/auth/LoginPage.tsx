@@ -13,7 +13,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import LoginForm from "@/components/authForms/LoginForm";
+import LoginForm from "@/components/auth/LoginForm";
 
 type LoginFormValues = z.infer<typeof loginSchema>;
 

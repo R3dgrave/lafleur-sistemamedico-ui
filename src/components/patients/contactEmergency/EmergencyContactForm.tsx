@@ -1,10 +1,9 @@
-import React from "react";
-import { useForm, FormProvider } from "react-hook-form";
-import type { UseFormReturn } from "react-hook-form";
+// src/components/patients/EmergencyContactForm.tsx
+import { useForm } from "react-hook-form";
+import type { ControllerRenderProps } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -21,7 +20,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-
+import { formatPhoneNumber } from "@/lib/formatters";
 import {
   createContactoEmergenciaSchema,
   updateContactoEmergenciaSchema,
@@ -30,11 +29,11 @@ import type {
   ContactoEmergencia,
   CreateContactoEmergenciaFormValues,
   UpdateContactoEmergenciaFormValues,
-} from "../../types/index";
+} from "@/types/index";
 
 interface EmergencyContactFormProps {
   initialData?: ContactoEmergencia;
-  pacienteRut?: string;
+  pacienteRut: string;
   onSubmit: (
     data:
       | CreateContactoEmergenciaFormValues
@@ -56,21 +55,29 @@ const EmergencyContactForm: React.FC<EmergencyContactFormProps> = ({
     : createContactoEmergenciaSchema;
 
   const form = useForm<
-    CreateContactoEmergenciaFormValues | UpdateContactoEmergenciaFormValues
+    z.infer<typeof formSchema>
   >({
     resolver: zodResolver(formSchema),
     defaultValues: initialData
       ? {
-        ...initialData,
-        rut_paciente: pacienteRut || initialData.Paciente?.rut || "", // Usar el RUT del paciente si está disponible
-      }
+          ...initialData,
+          rut_paciente: pacienteRut,
+          relacion_paciente: initialData.relacion_paciente ?? "",
+        }
       : {
-        rut_paciente: pacienteRut || "",
-        nombre_contacto: "",
-        telefono_contacto: "",
-        relacion_paciente: "",
-      },
+          rut_paciente: pacienteRut,
+          nombre_contacto: "",
+          telefono_contacto: "",
+          relacion_paciente: "",
+        },
   });
+
+  const handlePhoneBlur = (field: ControllerRenderProps<any, any>) => {
+    const currentPhone = field.value;
+    if (currentPhone) {
+      field.onChange(formatPhoneNumber(currentPhone));
+    }
+  };
 
   return (
     <Form {...form}>
@@ -84,14 +91,16 @@ const EmergencyContactForm: React.FC<EmergencyContactFormProps> = ({
               <FormControl>
                 <Input
                   placeholder="RUT del paciente asociado"
+                  disabled={true}
                   {...field}
-                  disabled={isSubmitting || !!pacienteRut}
+                  value={pacienteRut}
                 />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name="nombre_contacto"
@@ -109,6 +118,7 @@ const EmergencyContactForm: React.FC<EmergencyContactFormProps> = ({
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name="telefono_contacto"
@@ -117,15 +127,20 @@ const EmergencyContactForm: React.FC<EmergencyContactFormProps> = ({
               <FormLabel>Teléfono del Contacto</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="Ej: +56912345678"
+                  placeholder="Ej: 912345678 (9 dígitos)"
                   {...field}
                   disabled={isSubmitting}
+                  onBlur={() => {
+                    field.onBlur();
+                    handlePhoneBlur(field);
+                  }}
                 />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name="relacion_paciente"
@@ -172,8 +187,8 @@ const EmergencyContactForm: React.FC<EmergencyContactFormProps> = ({
                 ? "Guardando cambios..."
                 : "Creando contacto..."
               : initialData
-                ? "Guardar Cambios"
-                : "Crear Contacto"}
+              ? "Guardar Cambios"
+              : "Crear Contacto"}
           </Button>
         </div>
       </form>

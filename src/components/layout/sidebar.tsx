@@ -1,7 +1,8 @@
 import { Menu } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState } from "react"; // Importa useEffect
 import { sidebarLinks } from "./sidebarLinks";
+import useAuthStore from "@/store/authStore";
 
 export default function Sidebar({
   collapsed = false,
@@ -9,7 +10,7 @@ export default function Sidebar({
   collapsed?: boolean;
 }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
+  const { user: loggedInUser, isLoading: isLoadingUser } = useAuthStore();
   const handleNavigation = () => setIsMobileMenuOpen(false);
 
   const NavItem = ({
@@ -60,10 +61,12 @@ export default function Sidebar({
               <>
                 <img
                   src="https://kokonutui.com/logo.svg"
-                  className="w-8 h-8"
+                  className="w-8 h-8 mr-2" // Añadido margen
                   alt="Logo"
                 />
-                <p>La Fleur</p>
+                <p className="text-lg font-semibold text-gray-900 dark:text-white">
+                  La Fleur
+                </p>
               </>
             ) : (
               <img
@@ -73,6 +76,39 @@ export default function Sidebar({
               />
             )}
           </div>
+
+          {/* Sección de información del usuario */}
+          {!isLoadingUser && loggedInUser && (
+            <div className="px-4 py-4 border-b border-gray-200 dark:border-[#1F1F23] flex flex-col items-center">
+              {/* Imagen de perfil */}
+              <img
+                src={
+                  loggedInUser.profilePictureUrl ||
+                  "https://placehold.co/80x80/cccccc/333333?text=User"
+                } // Placeholder si no hay imagen
+                alt="Profile"
+                className="w-12 h-12 rounded-full object-cover mb-3 border-2 border-gray-300 dark:border-gray-600"
+              />
+              {!collapsed && (
+                <div className="text-center">
+                  <p className="font-semibold text-gray-800 dark:text-gray-100">
+                    {loggedInUser.nombre} {loggedInUser.apellido}
+                  </p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    {loggedInUser.email}
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
+          {isLoadingUser && !collapsed && (
+            <div className="px-4 py-4 border-b border-gray-200 dark:border-[#1F1F23] flex flex-col items-center animate-pulse">
+              <div className="w-12 h-12 rounded-full bg-gray-300 dark:bg-gray-700 mb-3"></div>
+              <div className="h-4 bg-gray-300 dark:bg-gray-700 rounded w-3/4 mb-1"></div>
+              <div className="h-3 bg-gray-200 dark:bg-gray-600 rounded w-1/2"></div>
+              <div className="h-3 bg-gray-200 dark:bg-gray-600 rounded w-1/3 mt-1"></div>
+            </div>
+          )}
 
           <div className="flex-1 overflow-y-auto py-4 px-2 space-y-6">
             {sidebarLinks.map((section) => (
@@ -97,7 +133,7 @@ export default function Sidebar({
 
       {isMobileMenuOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-[65] lg:hidden"
+          className="fixed inset-0 bg-black/40 bg-opacity-50 z-[65] lg:hidden"
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}

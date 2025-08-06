@@ -22,6 +22,13 @@ export const patientService = {
     return response.data;
   },
 
+  searchPatients: async (query: string): Promise<Paciente[]> => {
+    const response = await api.get(`/pacientes/buscar`, {
+      params: { query },
+    });
+    return response.data;
+  },
+
   create: async (data: CreatePacienteFormValues): Promise<Paciente> => {
     const response = await api.post("/pacientes", data);
     return response.data.paciente;

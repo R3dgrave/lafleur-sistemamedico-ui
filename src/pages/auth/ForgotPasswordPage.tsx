@@ -13,7 +13,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import ForgotPasswordForm from "@/components/authForms/ForgotPasswordForm";
+import ForgotPasswordForm from "@/components/auth/ForgotPasswordForm";
 
 type ForgotPasswordFormValues = z.infer<typeof forgotPasswordSchema>;
 

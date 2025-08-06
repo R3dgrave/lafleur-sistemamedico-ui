@@ -1,22 +1,7 @@
+// src/store/authStore.ts
 import { create } from "zustand";
 import api from "@/lib/api";
-
-interface UserData {
-  email: string;
-  nombre?: string;
-}
-
-interface AuthState {
-  isAuthenticated: boolean;
-  accessToken: string | null;
-  user: UserData | null;
-  isLoading: boolean;
-
-  login: (accessToken: string, userData: UserData) => void;
-  logout: () => void;
-  setAccessToken: (token: string | null) => void;
-  initializeAuth: () => Promise<void>;
-}
+import type { AuthState } from "@/types";
 
 const useAuthStore = create<AuthState>((set) => ({
   isAuthenticated: false,
@@ -36,8 +21,11 @@ const useAuthStore = create<AuthState>((set) => ({
   },
 
   // Función para cerrar sesión
-  logout: () => {
+  logout: async () => {
     localStorage.removeItem("accessToken");
+    // También elimina el refresh token si lo manejas en el cliente (ej. cookies)
+    // Aunque el backend ya limpia la cookie, es buena práctica aquí también.
+    await api.post("/autenticacion/cerrar-sesion");
     set({
       isAuthenticated: false,
       accessToken: null,
@@ -57,13 +45,23 @@ const useAuthStore = create<AuthState>((set) => ({
     }
   },
 
+  // Función para actualizar el objeto de usuario en el store
+  updateUserInStore: (userData) => {
+    set({ user: userData });
+  },
+
   // Función para inicializar el estado de autenticación al cargar la aplicación
   initializeAuth: async () => {
     set({ isLoading: true });
 
     const storedAccessToken = localStorage.getItem("accessToken");
     if (storedAccessToken) {
+      // Configura el token en el interceptor de Axios si aún no está configurado
+      // Esto es crucial para que las llamadas subsiguientes usen el token
+      api.defaults.headers.common['Authorization'] = `Bearer ${storedAccessToken}`;
+
       try {
+        // Esta es la ÚNICA llamada a /autenticacion/perfil al inicio
         const response = await api.get("/autenticacion/perfil");
         const userData = response.data;
         set({
@@ -78,9 +76,10 @@ const useAuthStore = create<AuthState>((set) => ({
             "Access token invalid or expired during initialization. Logging out."
           );
         } else {
-          console.log("Other error during initialization. Logging out.");
+          console.error("Error during authentication initialization:", e);
         }
         localStorage.removeItem("accessToken");
+        delete api.defaults.headers.common['Authorization']; // Limpia el header
         set({
           isAuthenticated: false,
           accessToken: null,
