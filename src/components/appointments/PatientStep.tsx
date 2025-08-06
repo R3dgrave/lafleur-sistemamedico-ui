@@ -49,7 +49,7 @@ const PatientStep: React.FC<PatientStepProps> = ({
       <FormField
         control={form.control}
         name="paciente_id"
-        render={({ field }) => (
+        render={({ }) => (
           <FormItem>
             <FormLabel>Paciente</FormLabel>
             <FormControl>

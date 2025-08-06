@@ -7,8 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Loader2, Trash2, EditIcon, X } from "lucide-react";
-import type { HorarioDisponible, ExcepcionDisponibilidad, CreateHorarioDisponibleData, CreateExcepcionDisponibilidadData } from "@/types";
-import { toast } from "react-toastify";
+import type { HorarioDisponible, ExcepcionDisponibilidad} from "@/types";
 
 interface AvailabilitySettingsTabProps {
   loggedInUser: any; // Usamos 'any' aquí para simplificar, pero idealmente sería 'Administrador'
@@ -51,7 +50,6 @@ interface AvailabilitySettingsTabProps {
 }
 
 export default function AvailabilitySettingsTab({
-  loggedInUser,
   isFetchingAvailability,
   horarios,
   excepciones,

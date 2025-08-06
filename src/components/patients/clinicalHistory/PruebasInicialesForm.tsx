@@ -44,7 +44,6 @@ const PruebasInicialesForm: React.FC<PruebasInicialesFormProps> = ({
   onSubmit,
   onCancel,
   isSubmitting,
-  patientAppointments,
 }) => {
   const isEditing = !!initialData;
 

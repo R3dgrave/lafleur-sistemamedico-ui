@@ -293,13 +293,14 @@ export const clinicalHistoryService = {
    * @returns {Promise<PruebasIniciales>} La prueba inicial creada.
    */
   createPruebasIniciales: async (
+    historiaClinicaId: number,
     data: CreatePruebasInicialesData
   ): Promise<PruebasIniciales> => {
     const response = await api.post(
-      `/historia-clinica/pruebas-iniciales`,
+      `/historia-clinica/${historiaClinicaId}/pruebas-iniciales`,
       data
     );
-    return response.data;
+    return response.data.nuevaPrueba;
   },
 
   /**

@@ -17,7 +17,6 @@ import {
   Save,
   XCircle,
   UploadCloud,
-  Image as ImageIcon,
 } from "lucide-react";
 import { toast } from "react-toastify";
 import useAuthStore from "@/store/authStore"; // Importa el store de Zustand

@@ -139,7 +139,7 @@ const MedicalHistorySection: React.FC<MedicalHistorySectionProps> = ({
     handleClosePruebasInicialesForm,
     handleSubmitPruebasInicialesForm,
     handleDeletePruebasIniciales,
-  } = usePruebasIniciales(pacienteId);
+  } = usePruebasIniciales(clinicalHistory?.historia_clinica_id);
 
   if (isLoadingClinicalHistory || isLoadingPatientAppointments) {
     return (

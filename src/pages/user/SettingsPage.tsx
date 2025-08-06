@@ -36,7 +36,7 @@ export default function SettingsPage() {
     isLoading: isLoadingAuth,
     updateUserInStore,
   } = useAuthStore();
-
+  
   // Estados para el formulario de cambio de contraseña
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -81,7 +81,7 @@ export default function SettingsPage() {
 
   // Función para cargar horarios y excepciones
   const fetchAvailabilityData = useCallback(async () => {
-    if (!loggedInUser?.id) return;
+    if (!loggedInUser?.administrador_id) return;
     setIsFetchingAvailability(true);
     try {
       const [horariosData, excepcionesData] = await Promise.all([
@@ -201,7 +201,7 @@ export default function SettingsPage() {
   // NUEVO/MODIFICADO: Manejador para añadir o actualizar un horario
   const handleSubmitHorarioForm = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!loggedInUser?.id) {
+    if (!loggedInUser?.administrador_id) {
       toast.error("Usuario no autenticado.");
       return;
     }
@@ -224,7 +224,7 @@ export default function SettingsPage() {
       } else {
         // Crear nuevo horario
         const data: CreateHorarioDisponibleData = {
-          administrador_id: loggedInUser.id,
+          administrador_id: loggedInUser.administrador_id,
           dia_semana: parseInt(newHorarioDiaSemana),
           hora_inicio: newHorarioHoraInicio,
           hora_fin: newHorarioHoraFin,
@@ -284,7 +284,7 @@ export default function SettingsPage() {
   // MODIFICADO: Manejador para añadir o actualizar una excepción (antes handleAddExcepcion)
   const handleSubmitExcepcionForm = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!loggedInUser?.id) {
+    if (!loggedInUser?.administrador_id) {
       toast.error("Usuario no autenticado.");
       return;
     }
@@ -312,7 +312,7 @@ export default function SettingsPage() {
       } else {
         // Crear nueva excepción
         const data: CreateExcepcionDisponibilidadData = {
-          administrador_id: loggedInUser.id,
+          administrador_id: loggedInUser.administrador_id,
           fecha: newExcepcionFecha,
           es_dia_completo: newExcepcionEsDiaCompleto,
           hora_inicio_bloqueo: newExcepcionEsDiaCompleto ? undefined : newExcepcionHoraInicioBloqueo,

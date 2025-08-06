@@ -9,7 +9,7 @@ interface FormNavigationProps {
   isSubmitting: boolean;
   isEditing: boolean;
   onCancel: () => void;
-  onSubmit: () => void; // This will be form.handleSubmit(onSubmit) from parent
+  onSubmit: () => void;
 }
 
 const FormNavigation: React.FC<FormNavigationProps> = ({

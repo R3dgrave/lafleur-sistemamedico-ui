@@ -172,10 +172,6 @@ const AppointmentsPage: React.FC = () => {
     setEditingCita(cita);
   };
 
-  const handleCloseEditModal = () => {
-    setEditingCita(null);
-  };
-
   const handleOpenCreateModal = () => {
     setEditingCita(null); // Asegura que no estamos en modo edición al abrir para crear
     setIsCreateModalOpen(true);

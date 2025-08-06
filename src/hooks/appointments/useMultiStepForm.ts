@@ -28,7 +28,6 @@ interface UseMultiStepFormResult {
 
 export const useMultiStepForm = ({
   form,
-  isEditing,
   selectedPatientInForm,
   administradorIdValue,
   tipoAtencionIdValue,

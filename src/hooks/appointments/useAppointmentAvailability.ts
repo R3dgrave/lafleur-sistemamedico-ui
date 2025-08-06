@@ -13,7 +13,7 @@ const CHILE_TIMEZONE = 'America/Santiago';
 interface UseAppointmentAvailabilityProps {
     form: UseFormReturn<any>;
     initialData?: Cita;
-    isSubmitting: boolean; // Mantener si se usa para deshabilitar algo dentro del hook
+    isSubmitting: boolean;
 }
 
 interface UseAppointmentAvailabilityResult {

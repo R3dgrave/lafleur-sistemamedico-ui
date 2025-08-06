@@ -102,7 +102,6 @@ api.interceptors.response.use(
 
       switch (status) {
         case 400:
-          const validationErrors = (data as { errors?: any[] })?.errors || [];
           toast.error(errorMessage);
           break;
         case 404: // Not Found

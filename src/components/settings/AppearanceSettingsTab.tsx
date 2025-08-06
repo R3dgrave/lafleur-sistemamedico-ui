@@ -1,5 +1,4 @@
 // src/components/settings/AppearanceSettingsTab.tsx
-import React from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { ModeToggle } from "@/components/toggle/mode-toggle";

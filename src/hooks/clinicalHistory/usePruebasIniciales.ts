@@ -7,7 +7,7 @@ import type { PruebasIniciales, CreatePruebasInicialesData, UpdatePruebasInicial
  * Hook para gestionar los registros de Pruebas Iniciales.
  * Se usa el hook genérico useClinicalSection, pasando el pacienteId como parentId.
  */
-export const usePruebasIniciales = (pacienteId: number | undefined) => {
+export const usePruebasIniciales = (historiaClinicaId: number | undefined) => {
   const {
     records,
     isLoading,
@@ -22,10 +22,10 @@ export const usePruebasIniciales = (pacienteId: number | undefined) => {
     handleDelete,
   } = useClinicalSection<PruebasIniciales, CreatePruebasInicialesData, UpdatePruebasInicialesData>(
     "pruebasIniciales",
-    pacienteId,
+    historiaClinicaId,
     {
       fetchFn: clinicalHistoryService.getPruebasInicialesByPacienteId,
-      createFn: (id, data) => clinicalHistoryService.createPruebasIniciales({ ...data, paciente_id: id }),
+      createFn: (id, data) => clinicalHistoryService.createPruebasIniciales(id, data),
       updateFn: (id, data) => clinicalHistoryService.updatePruebasIniciales(id, data),
       deleteFn: clinicalHistoryService.deletePruebasIniciales,
     },

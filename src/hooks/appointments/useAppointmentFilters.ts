@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { patientService } from '@/services/patientService';
 import { attentionTypeService } from '@/services/attentionTypeService';
@@ -29,8 +29,6 @@ interface UseAppointmentFiltersResult {
 }
 
 export const useAppointmentFilters = (): UseAppointmentFiltersResult => {
-    const queryClient = useQueryClient();
-
     const [filterPacienteId, setFilterPacienteId] = useState<number | undefined>(undefined);
     const [filterTipoAtencionId, setFilterTipoAtencionId] = useState<number | undefined>(undefined);
     const [filterEstadoCita, setFilterEstadoCita] = useState<string>("");

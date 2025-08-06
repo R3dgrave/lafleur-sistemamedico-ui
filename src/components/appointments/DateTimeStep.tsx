@@ -1,6 +1,6 @@
 import React from "react";
 import type { UseFormReturn } from "react-hook-form";
-import { format, isValid, parseISO } from "date-fns";
+import { format, isValid } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { DateTime } from "luxon";
@@ -59,7 +59,7 @@ const DateTimeStep: React.FC<DateTimeStepProps> = ({
       <FormField
         control={form.control}
         name="fecha_hora_cita"
-        render={({ field }) => (
+        render={({ }) => (
           <FormItem className="flex flex-col">
             <FormLabel>Fecha de la Cita</FormLabel>
             <Popover>

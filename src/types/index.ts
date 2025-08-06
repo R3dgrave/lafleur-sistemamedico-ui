@@ -373,18 +373,25 @@ export interface PruebasIniciales {
   temperatura: number | null;
   saturacion_oxigeno: number | null;
   notas_adicionales: string | null;
-  Cita?: Cita;
+  HistoriaClinica?: {
+    historia_clinica_id: number;
+    paciente_id: number;
+  };
+  Cita?: {
+    cita_id: number;
+    fecha_hora_cita: string;
+  };
 }
 
 export type CreatePruebasInicialesData = Omit<
     PruebasIniciales,
-    "prueba_id" | "fecha_registro"
+    "prueba_id" | "fecha_registro" | "HistoriaClinica" | "Cita"
 >;
 
 export type UpdatePruebasInicialesData = Partial<
     Omit<
         PruebasIniciales,
-        "prueba_id" | "paciente_id" | "fecha_registro"
+        "prueba_id" | "historia_clinica_id" | "fecha_registro" | "HistoriaClinica" | "Cita"
     >
 >;
 

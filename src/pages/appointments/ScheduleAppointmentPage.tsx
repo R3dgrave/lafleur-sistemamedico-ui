@@ -71,7 +71,6 @@ const ScheduleAppointmentPage: React.FC = () => {
 
   const {
     data: searchedPatients,
-    isLoading: isLoadingPatients,
     isFetching: isFetchingPatients,
   } = useQuery<Paciente[]>({
     queryKey: ["patientsSearch", patientSearchQuery],
