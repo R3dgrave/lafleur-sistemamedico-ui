@@ -14,16 +14,6 @@ export const emergencyContactService = {
     return response.data;
   },
 
-  getByPacienteRut: async (rut: string): Promise<ContactoEmergencia[]> => {
-    const response = await api.get(`/contactos-emergencia/por-paciente/${rut}`);
-    return response.data;
-  },
-
-  getById: async (id: number): Promise<ContactoEmergencia> => {
-    const response = await api.get(`/contactos-emergencia/${id}`);
-    return response.data;
-  },
-
   create: async (
     data: CreateContactoEmergenciaFormValues
   ): Promise<ContactoEmergencia> => {

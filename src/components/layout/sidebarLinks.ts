@@ -6,30 +6,35 @@ import {
   Wallet,
   Receipt,
   CreditCard,
-  Users2,
+  User,
   Shield,
   MessagesSquare,
   Video,
   Settings,
   HelpCircle,
-} from "lucide-react"
+  Users2,
+  CalendarDays,
+  BaggageClaim,
+} from "lucide-react";
+
 
 type SidebarLink = {
-  section: string
+  section: string;
   items: {
-    label: string
-    to: string
-    icon: React.ElementType
-  }[]
-}
+    label: string;
+    to: string;
+    icon: React.ElementType;
+  }[];
+};
 
 export const sidebarLinks: SidebarLink[] = [
   {
     section: "Panel",
     items: [
       { label: "Principal", to: "/dashboard", icon: Home },
-      { label: "Agenda", to: "/analytics", icon: BarChart2 },
-      { label: "Pacientes", to: "/organization", icon: Building2 },
+      { label: "Pacientes", to: "/pacientes", icon: Users2 },
+      { label: "Citas", to: "/citas", icon: CalendarDays },
+      { label: "reserva", to: "/reserva", icon: CalendarDays },
     ],
   },
   {
@@ -43,15 +48,15 @@ export const sidebarLinks: SidebarLink[] = [
   {
     section: "Inventario",
     items: [
-      { label: "Stock", to: "/members", icon: Users2 },
+      { label: "Stock", to: "/members", icon: BaggageClaim },
       { label: "Categorias", to: "/permissions", icon: Shield },
     ],
   },
   {
     section: "Otros",
     items: [
-      { label: "Ajustes", to: "/settings", icon: Settings },
-      { label: "Ayuda", to: "/help", icon: HelpCircle },
+      { label: "Perfil", to: "/perfil", icon: User },
+      { label: "Ajustes", to: "/ajustes", icon: Settings },
     ],
   },
-]
+];
