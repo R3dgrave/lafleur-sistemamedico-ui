@@ -80,7 +80,7 @@ const LoginPage: React.FC = () => {
     <div className="flex flex-row min-h-screen bg-gray-100 dark:bg-gray-900">
       <div className="hidden lg:flex lg:w-1/2 h-[100vh] bg-white dark:bg-gray-800">
         <img
-          src="./lafleur_logo.png"
+          src="./lafleur_logo.webp"
           alt="Logo Lafleur"
           className="w-full object-cover aspect-square"
         />
@@ -90,7 +90,7 @@ const LoginPage: React.FC = () => {
         <div className="w-full max-w-md">
           <div className="lg:hidden flex justify-center items-center mb-6">
             <img
-              src="./lafleur_logo.png"
+              src="./lafleur_logo.webp"
               alt="Logo Lafleur"
               className="h-60 object-cover"
             />
