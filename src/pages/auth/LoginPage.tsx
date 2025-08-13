@@ -113,6 +113,41 @@ const LoginPage: React.FC = () => {
               </form>
             </FormProvider>
           </CardContent>
+          <div className="flex flex-col items-center gap-y-4">
+            {/* Mensaje de espera para el despliegue */}
+            <div className="p-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 w-full max-w-sm rounded-lg shadow-md">
+              <p className="font-medium text-sm">⚠️ **¡Importante!** ⚠️</p>
+              <p className="text-sm mt-1">
+                El backend y la base de datos están alojados en servicios
+                gratuitos (Render y Neon), por lo que pueden tardar unos minutos
+                en desplegarse. Por favor, sé paciente.
+              </p>
+            </div>
+            {/* Usuarios de prueba */}
+            <div className="p-4 border rounded-lg shadow-md bg-white w-full max-w-sm">
+              <h3 className="text-lg font-semibold mb-2">
+                Usuario de prueba 1
+              </h3>
+              <p className="text-gray-700">
+                <span className="font-medium">Correo:</span> correo@gmail.com
+              </p>
+              <p className="text-gray-700">
+                <span className="font-medium">Contraseña:</span> 123456
+              </p>
+            </div>
+            <div className="p-4 border rounded-lg shadow-md bg-white w-full max-w-sm">
+              <h3 className="text-lg font-semibold mb-2">
+                Usuario de prueba 2
+              </h3>
+              <p className="text-gray-700">
+                <span className="font-medium">Correo:</span>{" "}
+                doctora.lopez@example.com
+              </p>
+              <p className="text-gray-700">
+                <span className="font-medium">Contraseña:</span> passwordDoc
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
