@@ -48,8 +48,10 @@ import FormNavigation from "@/components/appointments/FormNavigation";
 const CHILE_TIMEZONE = "America/Santiago";
 
 // Define los mensajes de error como constantes para mejorar la legibilidad y mantenibilidad.
-const NO_SLOTS_MESSAGE = "No hay horas disponibles para esta fecha, administrador y tipo de atención.";
-const CONFLICT_MESSAGE = "La hora seleccionada ya no está disponible o choca con una cita existente.";
+const NO_SLOTS_MESSAGE =
+  "No hay horas disponibles para esta fecha, administrador y tipo de atención.";
+const CONFLICT_MESSAGE =
+  "La hora seleccionada ya no está disponible o choca con una cita existente.";
 
 interface AppointmentFormProps {
   appointment?: Cita;
@@ -134,6 +136,32 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
     isSubmitting,
   });
 
+  let timesToDisplay = availableTimes;
+  if (isEditing && appointment && availableTimes) {
+    const originalTimeISO = appointment.fecha_hora_cita
+      ? new Date(appointment.fecha_hora_cita).toISOString()
+      : null;
+
+    if (
+      originalTimeISO &&
+      !availableTimes.some((slot) => slot.start === originalTimeISO)
+    ) {
+      const originalAppointmentEnd = new Date(
+        new Date(appointment.fecha_hora_cita).getTime() +
+          (appointment.TipoAtencion?.duracion_minutos || 0) * 60000
+      ).toISOString();
+
+      const originalSlot = {
+        start: originalTimeISO,
+        end: originalAppointmentEnd,
+      };
+
+      timesToDisplay = [...availableTimes, originalSlot].sort((a, b) =>
+        a.start.localeCompare(b.start)
+      );
+    }
+  }
+
   // --- Integrar useMultiStepForm ---
   const { step, setStep, canGoNext } = useMultiStepForm({
     form,
@@ -148,49 +176,63 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
   // --- Lógica de validación de fecha/hora más precisa (refactorizada) ---
   useEffect(() => {
     const currentFechaHoraCita = form.getValues("fecha_hora_cita");
-    
+
     // Calcula el ISO string del inicio del día en la zona horaria de Chile para la fecha seleccionada.
     const startOfDayInChileISO = selectedDate
-        ? DateTime.fromJSDate(selectedDate, { zone: CHILE_TIMEZONE }).startOf('day').toUTC().toISO()
-        : null;
+      ? DateTime.fromJSDate(selectedDate, { zone: CHILE_TIMEZONE })
+          .startOf("day")
+          .toUTC()
+          .toISO()
+      : null;
 
     // Determina si el usuario ha seleccionado una hora específica (no solo la fecha).
-    const isSpecificTimeSlotSelectedByUser = currentFechaHoraCita && isValid(parseISO(currentFechaHoraCita)) &&
-                                             currentFechaHoraCita !== startOfDayInChileISO;
+    const isSpecificTimeSlotSelectedByUser =
+      currentFechaHoraCita &&
+      isValid(parseISO(currentFechaHoraCita)) &&
+      currentFechaHoraCita !== startOfDayInChileISO;
 
     const currentErrorMessage = form.formState.errors.fecha_hora_cita?.message;
     let targetErrorMessage: string | null = null; // Inicializa el mensaje de error deseado
 
     // Paso 1: Determinar si no podemos validar la disponibilidad de slots (faltan inputs o están cargando).
     if (!canShowSlots || isLoadingAvailableTimes) {
-        // En este estado, no hay un error específico de disponibilidad que deba mostrarse.
-        // targetErrorMessage permanece null, lo que llevará a limpiar el error si existe.
+      // En este estado, no hay un error específico de disponibilidad que deba mostrarse.
+      // targetErrorMessage permanece null, lo que llevará a limpiar el error si existe.
     }
     // Paso 2: Si los slots están cargados y no hay horas disponibles.
     else if (availableTimes && availableTimes.length === 0) {
-        targetErrorMessage = NO_SLOTS_MESSAGE;
+      targetErrorMessage = NO_SLOTS_MESSAGE;
     }
     // Paso 3: Si el usuario seleccionó una hora específica y esa hora no está en las disponibles.
-    else if (isSpecificTimeSlotSelectedByUser && !availableTimes?.some(slot => slot.start === currentFechaHoraCita)) {
-        const originalAppointmentTimeISO = appointment?.fecha_hora_cita ? new Date(appointment.fecha_hora_cita).toISOString() : null;
-        // Solo establece el error de conflicto si no es la hora original de la cita en modo edición.
-        if (!(isEditing && currentFechaHoraCita === originalAppointmentTimeISO)) {
-            targetErrorMessage = CONFLICT_MESSAGE;
-        }
+    else if (
+      isSpecificTimeSlotSelectedByUser &&
+      !availableTimes?.some((slot) => slot.start === currentFechaHoraCita)
+    ) {
+      const originalAppointmentTimeISO = appointment?.fecha_hora_cita
+        ? new Date(appointment.fecha_hora_cita).toISOString()
+        : null;
+      // Solo establece el error de conflicto si no es la hora original de la cita en modo edición.
+      if (!(isEditing && currentFechaHoraCita === originalAppointmentTimeISO)) {
+        targetErrorMessage = CONFLICT_MESSAGE;
+      }
     }
     // Paso 4: Si ninguna de las condiciones anteriores se cumple, no hay error de disponibilidad.
     // targetErrorMessage permanece null.
 
     // Aplicar o limpiar el error basándose en el targetErrorMessage y el currentErrorMessage.
     if (targetErrorMessage && currentErrorMessage !== targetErrorMessage) {
-        // Establece el error si hay un mensaje de error deseado y es diferente al actual.
-        form.setError("fecha_hora_cita", {
-            type: "manual",
-            message: targetErrorMessage,
-        });
-    } else if (!targetErrorMessage && (currentErrorMessage === NO_SLOTS_MESSAGE || currentErrorMessage === CONFLICT_MESSAGE)) {
-        // Limpia el error si no hay un mensaje de error deseado Y el error actual es uno de los que manejamos.
-        form.clearErrors('fecha_hora_cita');
+      // Establece el error si hay un mensaje de error deseado y es diferente al actual.
+      form.setError("fecha_hora_cita", {
+        type: "manual",
+        message: targetErrorMessage,
+      });
+    } else if (
+      !targetErrorMessage &&
+      (currentErrorMessage === NO_SLOTS_MESSAGE ||
+        currentErrorMessage === CONFLICT_MESSAGE)
+    ) {
+      // Limpia el error si no hay un mensaje de error deseado Y el error actual es uno de los que manejamos.
+      form.clearErrors("fecha_hora_cita");
     }
   }, [
     selectedDate,
@@ -203,7 +245,6 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
     isEditing,
     appointment,
   ]);
-
 
   const onSubmit = async (
     data: CreateCitaFormValues | UpdateCitaFormValues
@@ -299,15 +340,19 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
                   isLoadingAdministrators={isLoadingAdministrators}
                   attentionTypes={attentionTypes}
                   isLoadingAttentionTypes={isLoadingAttentionTypes}
-                  handleAdministratorSelectChange={handleAdministratorSelectChange}
-                  handleAttentionTypeSelectChange={handleAttentionTypeSelectChange}
+                  handleAdministratorSelectChange={
+                    handleAdministratorSelectChange
+                  }
+                  handleAttentionTypeSelectChange={
+                    handleAttentionTypeSelectChange
+                  }
                   isSubmitting={isSubmitting}
                 />
 
                 <DateTimeStep
                   form={form}
                   selectedDate={selectedDate}
-                  availableTimes={availableTimes}
+                  availableTimes={timesToDisplay}
                   isLoadingAvailableTimes={isLoadingAvailableTimes}
                   isErrorSlots={isErrorSlots}
                   slotsError={slotsError}
@@ -335,10 +380,18 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem key="pendiente" value="Pendiente">Pendiente</SelectItem>
-                          <SelectItem key="confirmada" value="Confirmada">Confirmada</SelectItem>
-                          <SelectItem key="cancelada" value="Cancelada">Cancelada</SelectItem>
-                          <SelectItem key="completada" value="Completada">Completada</SelectItem>
+                          <SelectItem key="pendiente" value="Pendiente">
+                            Pendiente
+                          </SelectItem>
+                          <SelectItem key="confirmada" value="Confirmada">
+                            Confirmada
+                          </SelectItem>
+                          <SelectItem key="cancelada" value="Cancelada">
+                            Cancelada
+                          </SelectItem>
+                          <SelectItem key="completada" value="Completada">
+                            Completada
+                          </SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -367,7 +420,9 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
                     isLoadingSearchedPatients={isLoadingSearchedPatients}
                     isFetchingSearchedPatients={isFetchingSearchedPatients}
                     handlePatientSearchChange={handlePatientSearchChange}
-                    handlePatientSelectFromSearch={handlePatientSelectFromSearch}
+                    handlePatientSelectFromSearch={
+                      handlePatientSelectFromSearch
+                    }
                     handleClearSelectedPatient={handleClearSelectedPatient}
                     isPatientSearchDisabled={isPatientSearchDisabled}
                     isSubmitting={isSubmitting}
@@ -381,8 +436,12 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
                     isLoadingAdministrators={isLoadingAdministrators}
                     attentionTypes={attentionTypes}
                     isLoadingAttentionTypes={isLoadingAttentionTypes}
-                    handleAdministratorSelectChange={handleAdministratorSelectChange}
-                    handleAttentionTypeSelectChange={handleAttentionTypeSelectChange}
+                    handleAdministratorSelectChange={
+                      handleAdministratorSelectChange
+                    }
+                    handleAttentionTypeSelectChange={
+                      handleAttentionTypeSelectChange
+                    }
                     isSubmitting={isSubmitting}
                   />
                 )}
@@ -391,7 +450,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
                   <DateTimeStep
                     form={form}
                     selectedDate={selectedDate}
-                    availableTimes={availableTimes}
+                    availableTimes={timesToDisplay}
                     isLoadingAvailableTimes={isLoadingAvailableTimes}
                     isErrorSlots={isErrorSlots}
                     slotsError={slotsError}

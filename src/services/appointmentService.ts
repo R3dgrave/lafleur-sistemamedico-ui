@@ -1,6 +1,13 @@
 // src/services/appointmentService.ts
 import api from "@/lib/api";
-import type { Cita, CreateCitaFormValues, UpdateCitaFormValues } from "@/types";
+import type {
+  Cita,
+  CreateCitaFormValues,
+  TimeSlot,
+  UpdateCitaFormValues,
+} from "@/types";
+import { DateTime } from "luxon";
+const STANDARD_APPOINTMENT_DURATION = 60;
 
 export const appointmentService = {
   getAll: async (filters?: {
@@ -17,10 +24,39 @@ export const appointmentService = {
   getAvailableTimes: async (
     date: string,
     adminId: number,
-    attentionTypeId: number
-  ): Promise<string[]> => {
-    const response = await api.get(`/disponibilidad/franjas-disponibles?administradorId=${adminId}&fecha=${date}&tipoAtencionId=${attentionTypeId}`);
-    return response.data;
+    tipoAtencionId: number
+  ): Promise<TimeSlot[]> => {
+    // Definimos el tipo de dato que esperamos del backend
+    type TimeResponse = { start: string; end: string /* otras propiedades */ };
+    const response = await api.get<TimeResponse[]>( // <- Esperamos un array de objetos TimeResponse
+      `/disponibilidad/franjas-disponibles?administradorId=${adminId}&fecha=${date}&tipoAtencionId=${tipoAtencionId}`
+    );
+
+    // Ahora, mapeamos sobre el array de objetos y accedemos a la propiedad `start`
+    return response.data
+      .map((item) => {
+        if (!item || typeof item.start !== "string") {
+          console.error(`Invalid start time received:`, item);
+          return null;
+        }
+
+        const startDateTime = DateTime.fromISO(item.start, { zone: "utc" });
+
+        if (!startDateTime.isValid) {
+          console.error(`Invalid ISO string from backend: ${item.start}`);
+          return null;
+        }
+
+        const endDateTime = startDateTime.plus({
+          minutes: STANDARD_APPOINTMENT_DURATION,
+        });
+
+        return {
+          start: startDateTime.toISO(),
+          end: endDateTime.toISO(),
+        };
+      })
+      .filter((slot): slot is TimeSlot => slot !== null);
   },
 
   getById: async (id: number): Promise<Cita> => {

@@ -53,6 +53,7 @@ const DateTimeStep: React.FC<DateTimeStepProps> = ({
   handleTimeSelect,
   isSubmitting,
 }) => {
+
   return (
     <div className="space-y-4">
       <h2 className="text-xl font-semibold">3. Fecha y Hora</h2>

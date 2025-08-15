@@ -145,6 +145,8 @@ export interface Cita {
     TipoAtencion?: {
         tipo_atencion_id: number;
         nombre_atencion: string;
+        duracion_minutos: number;
+        buffer_minutos: number;
     };
     Administrador?: {
         administrador_id: number;
