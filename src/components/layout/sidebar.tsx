@@ -17,20 +17,37 @@ export default function Sidebar({
     to,
     icon: Icon,
     children,
+    disabled = false,
   }: {
     to: string;
     icon: any;
     children: React.ReactNode;
-  }) => (
-    <Link
-      to={to}
-      onClick={handleNavigation}
-      className="flex items-center px-3 py-2 text-sm rounded-md transition-colors text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-[#1F1F23]"
-    >
-      <Icon className="h-4 w-4 mr-3 flex-shrink-0" />
-      {!collapsed && children}
-    </Link>
-  );
+    disabled?: boolean;
+  }) => {
+    const baseClasses =
+      "flex items-center px-3 py-2 text-sm rounded-md transition-colors flex-shrink-0";
+    const activeClasses =
+      "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-[#1F1F23]";
+    const disabledClasses =
+      "text-gray-400 dark:text-gray-600 cursor-not-allowed";
+    if (disabled) {
+      return (
+        <div className={`${baseClasses} ${disabledClasses}`}>
+          <Icon className="h-4 w-4 mr-3" />
+          {!collapsed && children}
+        </div>
+      );
+    }
+    return (
+      <Link
+        to={to}
+        onClick={handleNavigation}
+        className={`${baseClasses} ${activeClasses}`}
+      >
+        <Icon className="h-4 w-4 mr-3" />  {!collapsed && children}
+      </Link>
+    );
+  };
 
   return (
     <>
@@ -120,7 +137,12 @@ export default function Sidebar({
                 )}
                 <div className="space-y-1">
                   {section.items.map((item) => (
-                    <NavItem key={item.to} to={item.to} icon={item.icon}>
+                    <NavItem
+                      key={item.to}
+                      to={item.to}
+                      icon={item.icon}
+                      disabled={item.disabled}
+                    >
                       {item.label}
                     </NavItem>
                   ))}
