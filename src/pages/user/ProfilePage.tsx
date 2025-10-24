@@ -310,7 +310,9 @@ export default function ProfilePage() {
               Rol: {loggedInUser.role}
             </p>
             {isEditing && (
+              
               <div className="mt-4 w-full">
+                {/* 
                 <Label
                   htmlFor="file-upload"
                   className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block"
@@ -358,7 +360,7 @@ export default function ProfilePage() {
                       No hay imagen de perfil.
                     </p>
                   )}
-                  {/* Botón para eliminar la imagen de perfil */}
+
                   {filePreviewUrl && !selectedFile && (
                     <Button
                       variant="ghost"
@@ -378,6 +380,7 @@ export default function ProfilePage() {
                     </Button>
                   )}
                 </div>
+                */}
               </div>
             )}
           </div>

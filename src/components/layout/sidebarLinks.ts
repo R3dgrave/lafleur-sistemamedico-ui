@@ -11,7 +11,6 @@ import {
   BaggageClaim,
 } from "lucide-react";
 
-
 type SidebarLink = {
   section: string;
   items: {
