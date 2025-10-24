@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { administratorService } from "@/services/administratorService";
 import {
   Card,
@@ -16,7 +16,7 @@ import {
   Edit,
   Save,
   XCircle,
-  UploadCloud,
+  //UploadCloud,
 } from "lucide-react";
 import { toast } from "react-toastify";
 import useAuthStore from "@/store/authStore"; // Importa el store de Zustand
@@ -38,7 +38,7 @@ export default function ProfilePage() {
   // Nuevos estados para la carga de archivos
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [filePreviewUrl, setFilePreviewUrl] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null); // Referencia para el input de archivo oculto
+  //const fileInputRef = useRef<HTMLInputElement>(null); // Referencia para el input de archivo oculto
 
   // Efecto para inicializar formData y filePreviewUrl cuando loggedInUser cambia desde el store
   useEffect(() => {
@@ -65,6 +65,7 @@ export default function ProfilePage() {
     setFormData((prev) => ({ ...prev, [id]: value }));
   };
 
+  /*
   // Manejadores para la carga de archivos
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -112,6 +113,7 @@ export default function ProfilePage() {
       toast.error("Por favor, suelta un archivo de imagen válido.");
     }
   };
+  */
 
   // Manejador para guardar los cambios del perfil
   const handleSaveProfile = async (e: React.FormEvent) => {
